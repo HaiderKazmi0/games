@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
           });
         }
       }
-      return true;
+      return true; 
     },
     async session({ session, token }) {
       if (session.user) {
