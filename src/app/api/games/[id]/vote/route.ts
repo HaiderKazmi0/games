@@ -5,9 +5,10 @@ import { authOptions } from '@/lib/auth';
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await getServerSession(authOptions);
     
     if (!session?.user) {
@@ -19,7 +20,7 @@ export async function POST(
 
     // Verify the game exists
     const game = await prisma.game.findUnique({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     });
 
     if (!game) {
@@ -54,7 +55,7 @@ export async function POST(
       where: {
         userId_gameId: {
           userId: user.id,
-          gameId: params.id,
+          gameId: resolvedParams.id,
         },
       },
     });
@@ -64,7 +65,7 @@ export async function POST(
         where: {
           userId_gameId: {
             userId: user.id,
-            gameId: params.id,
+            gameId: resolvedParams.id,
           },
         },
         data: {
@@ -75,7 +76,7 @@ export async function POST(
       await prisma.vote.create({
         data: {
           userId: user.id,
-          gameId: params.id,
+          gameId: resolvedParams.id,
           value,
         },
       });

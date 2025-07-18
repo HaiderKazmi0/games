@@ -37,13 +37,25 @@ const games = [
 
 async function main() {
   console.log('Start seeding...');
-  
+
+  // Create a user to be the creator of all games
+  const user = await prisma.user.create({
+    data: {
+      name: 'Seed User',
+      email: 'seeduser@example.com',
+      password: 'password123', // In production, use hashed passwords!
+    },
+  });
+
   for (const game of games) {
     await prisma.game.create({
-      data: game,
+      data: {
+        ...game,
+        creatorId: user.id,
+      },
     });
   }
-  
+
   console.log('Seeding finished.');
 }
 

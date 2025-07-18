@@ -89,7 +89,7 @@ export default async function GamesPage() {
                     {game.title}
                   </h2>
                   <div className="flex items-center text-sm text-gray-300">
-                    <span>Rating: {game.rating.toFixed(1)}</span>
+                    <span>Rating: {typeof game.rating === 'number' ? game.rating.toFixed(1) : 'N/A'}</span>
                   </div>
                 </div>
               </Link>

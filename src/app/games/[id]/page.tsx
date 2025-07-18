@@ -49,9 +49,10 @@ async function getGame(id: string) {
 export default async function GamePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const game = await getGame(id);
   const session = await getServerSession(authOptions);
   

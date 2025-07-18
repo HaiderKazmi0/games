@@ -5,9 +5,10 @@ import { authOptions } from '@/lib/auth';
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -19,7 +20,7 @@ export async function DELETE(
 
     // Find the game and check if the current user is the creator
     const game = await prisma.game.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       select: { creatorId: true }
     });
 
@@ -53,16 +54,16 @@ export async function DELETE(
     // Delete all related records first
     await prisma.$transaction([
       prisma.comment.deleteMany({
-        where: { gameId: params.id }
+        where: { gameId: resolvedParams.id }
       }),
       prisma.rating.deleteMany({
-        where: { gameId: params.id }
+        where: { gameId: resolvedParams.id }
       }),
       prisma.vote.deleteMany({
-        where: { gameId: params.id }
+        where: { gameId: resolvedParams.id }
       }),
       prisma.game.delete({
-        where: { id: params.id }
+        where: { id: resolvedParams.id }
       })
     ]);
 

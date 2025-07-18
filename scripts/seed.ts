@@ -58,11 +58,17 @@ async function main() {
     if (existingGame) {
       await prisma.game.update({
         where: { id: existingGame.id },
-        data: game,
+        data: {
+          ...game,
+          creatorId: user.id,
+        },
       });
     } else {
       await prisma.game.create({
-        data: game,
+        data: {
+          ...game,
+          creatorId: user.id,
+        },
       });
     }
   }

@@ -6,12 +6,12 @@ import { prisma } from '@/lib/prisma';
 // GET /api/games/[id]/comments - Get all comments for a game
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const comments = await prisma.comment.findMany({
       where: {
-        gameId: params.id,
+        gameId: (await params).id,
       },
       include: {
         user: {
@@ -39,7 +39,7 @@ export async function GET(
 // POST /api/games/[id]/comments - Create a new comment
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -71,10 +71,12 @@ export async function POST(
       );
     }
 
+    const resolvedParams = await params;
+
     const comment = await prisma.comment.create({
       data: {
         text: content,
-        gameId: params.id,
+        gameId: resolvedParams.id,
         userId: user.id,
       },
       include: {
@@ -100,7 +102,7 @@ export async function POST(
 // DELETE /api/games/[id]/comments - Delete a comment
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
