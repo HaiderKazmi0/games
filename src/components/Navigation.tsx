@@ -47,7 +47,7 @@ export default function Navigation() {
             <Link href="/leaderboard" className="flex items-center font-medium hover:text-[#FF4081] text-[#E0E0E0] transition-colors" style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}>
               <FaTrophy className="mr-1 text-[#FFD700]" /> Leaderboard
             </Link>
-            <a href="https://discord.gg/jKuTJhjG" target="_blank" rel="noopener noreferrer" className="flex items-center font-medium hover:text-[#00C2FF] text-[#E0E0E0] transition-colors" style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}>
+            <a href="https://discord.gg/gkH9nsfJ" target="_blank" rel="noopener noreferrer" className="flex items-center font-medium hover:text-[#00C2FF] text-[#E0E0E0] transition-colors" style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}>
               <FaDiscord className="mr-1 text-[#00C2FF] text-xl" /> Discord
             </a>
             {session ? (
