@@ -3,13 +3,14 @@ import Image from 'next/image';
 import { FaTrophy, FaStar } from 'react-icons/fa';
 
 async function getTopRaters() {
-  const topRaters = await prisma.user.findMany({
+  // Get all users with their rating counts
+  const usersWithRatings = await prisma.user.findMany({
     select: {
       id: true,
       name: true,
-      _count: {
+      ratings: {
         select: {
-          ratings: true,
+          gameId: true,
         },
       },
     },
@@ -18,13 +19,17 @@ async function getTopRaters() {
         some: {}, // Only include users who have rated at least one game
       },
     },
-    orderBy: {
-      ratings: {
-        _count: 'desc',
-      },
-    },
-    take: 10, // Get top 10 raters
   });
+
+  // Process the data to count unique games rated
+  const topRaters = usersWithRatings
+    .map(user => ({
+      id: user.id,
+      name: user.name,
+      gamesRated: new Set(user.ratings.map(rating => rating.gameId)).size,
+    }))
+    .sort((a, b) => b.gamesRated - a.gamesRated)
+    .slice(0, 10); // Get top 10 raters
   
   return topRaters;
 }
@@ -38,7 +43,7 @@ export default async function LeaderboardPage() {
       <div className="relative h-[40vh] flex items-center justify-center">
         <div className="absolute inset-0 bg-black/60 z-10" />
         <Image
-          src="/gaming-hero.jpg"
+          src="/gamingbackground.jpg"
           alt="Gaming background"
           fill
           className="object-cover"
@@ -78,7 +83,7 @@ export default async function LeaderboardPage() {
                       <h3 className="font-semibold">{user.name}</h3>
                       <div className="flex items-center text-yellow-400">
                         <FaStar className="mr-1" />
-                        <span>{user._count.ratings} ratings</span>
+                        <span>{user.gamesRated} games rated</span>
                       </div>
                     </div>
                   </div>
