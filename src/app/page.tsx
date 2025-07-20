@@ -7,10 +7,17 @@ import { authOptions } from '@/lib/auth';
 
 async function getStats() {
   const [totalGames, totalComments, totalUsers, trendingGames, topGames] = await Promise.all([
-    prisma.game.count(),
+    prisma.game.count({
+      where: {
+        ratings: { some: {} }, // Only count games that have at least one rating
+      },
+    }),
     prisma.comment.count(),
     prisma.user.count(),
     prisma.game.findMany({
+      where: {
+        ratings: { some: {} }, // Only include games that have at least one rating
+      },
       take: 5,
       orderBy: [
         { comments: { _count: 'desc' } },
@@ -21,6 +28,7 @@ async function getStats() {
           select: {
             comments: true,
             votes: true,
+            ratings: true,
           },
         },
         creator: {
@@ -31,6 +39,9 @@ async function getStats() {
       },
     }),
     prisma.game.findMany({
+      where: {
+        ratings: { some: {} }, // Only include games that have at least one rating
+      },
       take: 3,
       orderBy: {
         rating: 'desc',
@@ -40,6 +51,7 @@ async function getStats() {
           select: {
             comments: true,
             votes: true,
+            ratings: true,
           },
         },
         creator: {
@@ -153,9 +165,9 @@ export default async function Home() {
                   href={`/games/${game.id}`}
                   key={game.id}
                   className="group relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 hover:ring-2 hover:ring-blue-500 transition-all duration-300"
-                >
+                >   
                   <Image
-                    src={"/minecraft.jpg"}
+                    src={game.imageUrl}
                     alt={game.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -165,7 +177,9 @@ export default async function Home() {
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2">Minecraft</h3>
+                    <h3 className="text-sm font-semibold text-white mb-1 line-clamp-2">
+                      {game.title}
+                    </h3>
                     <div className="flex items-center space-x-2">
                       <FaStar className="text-yellow-400" />
                       <span className="text-white">{game.rating.toFixed(1)}</span>
@@ -192,18 +206,20 @@ export default async function Home() {
                   className="group relative aspect-[16/9] rounded-lg overflow-hidden bg-gray-800 hover:ring-2 hover:ring-blue-500 transition-all duration-300"
                 >
                   <Image
-                    src={"/reddead.jpg"}
+                    src={game.imageUrl}
                     alt={game.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-xl font-bold text-white mb-2">Read Dead Redemption 2</h3>
+                    <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+                      {game.title}
+                    </h3>
                     <div className="flex items-center space-x-2">
                       <FaStar className="text-yellow-400" />
                       <span className="text-white">{game.rating.toFixed(1)}</span>
-                      <span className="text-gray-400">({game._count.comments} reviews)</span>
+                      <span className="text-gray-400">({game._count.ratings} ratings)</span>
                     </div>
                   </div>
                 </Link>
