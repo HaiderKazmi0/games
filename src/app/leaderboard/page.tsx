@@ -25,7 +25,7 @@ async function getTopRaters() {
     },
     take: 10, // Get top 10 raters
   });
-
+  
   return topRaters;
 }
 
