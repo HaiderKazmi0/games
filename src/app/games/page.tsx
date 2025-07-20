@@ -6,21 +6,31 @@ import { authOptions } from '@/lib/auth';
 import { FaChevronLeft, FaChevronRight, FaTrash } from 'react-icons/fa';
 import DeleteGameButton from '@/components/DeleteGameButton';
 
-async function getUserGames() {
+interface Game {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  rating: number;
+  creator: {
+    id: string;
+    name: string;
+  };
+  _count: {
+    comments: number;
+    votes: number;
+    ratings: number;
+  };
+}
+
+async function getAllGames() {
   const session = await getServerSession(authOptions);
   const currentUser = session?.user ? await prisma.user.findUnique({
     where: { email: session.user.email },
     select: { id: true }
   }) : null;
 
-  if (!currentUser) {
-    return [];
-  }
-
   const games = await prisma.game.findMany({
-    where: {
-      creatorId: currentUser.id
-    },
     include: {
       _count: {
         select: {
@@ -40,11 +50,11 @@ async function getUserGames() {
       createdAt: 'desc',
     },
   });
-  return games;
+  return { games, currentUser };
 }
 
 export default async function GamesPage() {
-  const games = await getUserGames();
+  const { games, currentUser } = await getAllGames();
 
   return (
     <div className="min-h-screen bg-[#1a1f2e] text-white">
@@ -57,7 +67,7 @@ export default async function GamesPage() {
         </div>
 
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">My Games</h1>
+          <h1 className="text-4xl font-bold">All Games</h1>
           <Link
             href="/add-game"
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
@@ -68,14 +78,16 @@ export default async function GamesPage() {
 
         {/* Games Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {games.map((game) => (
+          {games.map((game: Game) => (
             <div
               key={game.id}
               className="group relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 hover:ring-2 hover:ring-blue-500 transition-all duration-300"
             >
-              <div className="absolute top-2 right-2 z-20">
-                <DeleteGameButton gameId={game.id} />
-              </div>
+              {currentUser && game.creator.id === currentUser.id && (
+                <div className="absolute top-2 right-2 z-20">
+                  <DeleteGameButton gameId={game.id} />
+                </div>
+              )}
               <Link href={`/games/${game.id}`}>
                 <Image
                   src={game.imageUrl}
