@@ -7,11 +7,7 @@ import { authOptions } from '@/lib/auth';
 
 async function getStats() {
   const [totalGames, totalComments, totalUsers, trendingGames, topGames] = await Promise.all([
-    prisma.game.count({
-      where: {
-        ratings: { some: {} }, // Only count games that have at least one rating
-      },
-    }),
+    prisma.game.count(), // Count all games in the database
     prisma.comment.count(),
     prisma.user.count(),
     prisma.game.findMany({
