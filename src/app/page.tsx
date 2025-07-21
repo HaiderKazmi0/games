@@ -77,7 +77,7 @@ export default async function Home() {
       <div className="relative h-[60vh] flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50 z-10" />
         <Image
-          src="https://yptzjmtcknjwrppo.public.blob.vercel-storage.com/Top-Free-Fire-Characters-of-2025-A-Comprehensive-Guide.png"
+          src="https://yptzjmtcknjwrppo.public.blob.vercel-storage.com/New%20Project%20%283%29.png"
           alt="Gaming background"
           fill
           className="object-cover"

@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Game Review Platform',
+  title: 'Debris Pulse💀',
   description: 'A platform for reviewing and discussing games',
 };
 
