@@ -15,7 +15,7 @@ export default function Navigation() {
           {/* Logo and Brand */}
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/Logo_maker_project-removebg-preview-removebg-preview.png" alt="Logo" width={80} height={80} className="h-20 w-20 rounded-lg" />
+              <Image src="https://yptzjmtcknjwrppo.public.blob.vercel-storage.com/Logo_maker_project-removebg-preview-removebg-preview.webp" alt="Logo" width={80} height={80} className="h-20 w-20 rounded-lg" />
               <span
                 className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-red-600"
                 style={{
