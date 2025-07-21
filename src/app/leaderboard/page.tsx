@@ -16,7 +16,7 @@ async function getTopRaters() {
     },
     where: {
       ratings: {
-        some: {}, // Only include users who have rated at least one game
+        some: {}, 
       },
     },
   });
