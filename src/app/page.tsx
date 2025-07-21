@@ -76,13 +76,7 @@ export default async function Home() {
       {/* Hero Section */}
       <div className="relative h-[60vh] flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50 z-10" />
-        <Image
-          src="https://yptzjmtcknjwrppo.public.blob.vercel-storage.com/New%20Project%20%283%29.png"
-          alt="Gaming background"
-          fill
-          className="object-cover"
-          priority
-        />
+        
         <div className="relative z-20 text-center px-4">
           <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
             Debris Pulse
