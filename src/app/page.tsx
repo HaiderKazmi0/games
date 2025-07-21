@@ -77,7 +77,7 @@ export default async function Home() {
       <div className="relative h-[60vh] flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50 z-10" />
         <Image
-          src="/Untitled.png"
+          src="/untitled.png"
           alt="Gaming background"
           fill
           className="object-cover"
