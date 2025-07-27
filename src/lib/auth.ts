@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 
 if (!process.env.DISCORD_CLIENT_ID) {
@@ -8,6 +9,14 @@ if (!process.env.DISCORD_CLIENT_ID) {
 
 if (!process.env.DISCORD_CLIENT_SECRET) {
   throw new Error('Missing DISCORD_CLIENT_SECRET');
+}
+
+if (!process.env.GOOGLE_CLIENT_ID) {
+  throw new Error('Missing GOOGLE_CLIENT_ID');
+}
+
+if (!process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error('Missing GOOGLE_CLIENT_SECRET');
 }
 
 if (!process.env.NEXTAUTH_URL) {
@@ -34,13 +43,17 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider === 'discord' && profile) {
+      if ((account?.provider === 'discord' || account?.provider === 'google') && profile) {
         const existingUser = await prisma.user.findUnique({
           where: { email: profile.email! },
         });
@@ -50,7 +63,7 @@ export const authOptions: NextAuthOptions = {
             data: {
               email: profile.email!,
               name: profile.name || profile.email!.split('@')[0],
-              password: '', // No password needed for Discord users
+              password: '', // No password needed for OAuth users
             },
           });
         }

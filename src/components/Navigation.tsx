@@ -2,11 +2,13 @@
 
 import { useSession, signOut, signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { FaDiscord, FaTrophy } from 'react-icons/fa';
+import { FaDiscord, FaTrophy, FaGoogle, FaChevronDown } from 'react-icons/fa';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function Navigation() {
   const { data: session } = useSession();
+  const [showAuthDropdown, setShowAuthDropdown] = useState(false);
 
   return (
     <nav className="shadow sticky top-0 z-50" style={{ background: '#0B0F1A' }}>
@@ -62,17 +64,69 @@ export default function Navigation() {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => signIn('discord')}
-                className="flex items-center px-4 py-2 rounded-md bg-[#00C2FF] hover:bg-[#FF4081] text-white font-semibold transition"
-                style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}
-              >
-                <FaDiscord className="mr-2 text-xl" /> Login with Discord
-              </button>
+              <div className="flex items-center space-x-3">
+                {/* Google Sign-up Button */}
+                <button
+                  onClick={() => signIn('google')}
+                  className="flex items-center px-4 py-2 rounded-md bg-white hover:bg-gray-100 text-gray-800 font-semibold transition shadow-md"
+                  style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}
+                >
+                  <FaGoogle className="mr-2 text-[#EA4335]" />
+                  Sign up with Google
+                </button>
+                
+                {/* All Sign-in Options Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowAuthDropdown(!showAuthDropdown)}
+                    className="flex items-center px-4 py-2 rounded-md bg-[#00C2FF] hover:bg-[#FF4081] text-white font-semibold transition"
+                    style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}
+                  >
+                    Sign In
+                    <FaChevronDown className="ml-2 text-sm" />
+                  </button>
+                  
+                  {showAuthDropdown && (
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-[#141A2A] rounded-md shadow-lg border border-gray-700 z-50">
+                      <div className="py-2">
+                        <button
+                          onClick={() => {
+                            signIn('google');
+                            setShowAuthDropdown(false);
+                          }}
+                          className="w-full flex items-center px-4 py-3 hover:bg-[#1E2736] text-[#E0E0E0] hover:text-white transition-colors"
+                          style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}
+                        >
+                          <FaGoogle className="mr-3 text-xl text-[#EA4335]" />
+                          Continue with Google
+                        </button>
+                        <button
+                          onClick={() => {
+                            signIn('discord');
+                            setShowAuthDropdown(false);
+                          }}
+                          className="w-full flex items-center px-4 py-3 hover:bg-[#1E2736] text-[#E0E0E0] hover:text-white transition-colors"
+                          style={{ fontFamily: 'Rajdhani, Orbitron, sans-serif' }}
+                        >
+                          <FaDiscord className="mr-3 text-xl text-[#5865F2]" />
+                          Continue with Discord
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>
       </div>
+      {/* Overlay to close dropdown when clicking outside */}
+      {showAuthDropdown && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowAuthDropdown(false)}
+        />
+      )}
     </nav>
   );
 } 
